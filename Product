@@ -1,0 +1,97 @@
+package code;
+
+public class Product {
+	
+	private String size;
+	private String serialNumber;
+	private int inventory;
+	private int maxInventory;
+	private int stock;
+	private int ord;
+	private boolean needToProduce;
+	private int aveSellsDay;
+	
+	
+	 public Product() {
+		this.size = "";            		
+		// size 
+		this.serialNumber ="";	   		
+		// serial number
+		this.stock = 0;        		
+		// current stock
+		this.inventory = 0;        		
+		// minimum inventory
+		this.maxInventory=0;
+		// maximum inventory
+		this.needToProduce=false;
+		//if the product needs for production to happen
+		this.ord = 0;   		
+		//how much product you need to refill the total quota
+		this.aveSellsDay = 0;     		
+		// average monthly sales /(30)
+	 }
+	
+	public Product(String sizeINTR, String serialNumberINTR,int stockINTR, int inventoryINTR, int maxInventoryINTR, int aveSellsMonthINTR) {
+		this.size = sizeINTR;
+		this.serialNumber = serialNumberINTR;
+		this.stock= stockINTR;
+		this.inventory = inventoryINTR;
+		this.maxInventory = maxInventoryINTR;
+		this.aveSellsDay = aveSellsMonthINTR /30;
+		this.ord = this.maxInventory - this.stock; 
+		if(this.maxInventory<this.inventory) {
+			this.needToProduce =true;
+		}else {
+			this.needToProduce=false;
+		}
+	}
+	
+	public int getInventory () {
+		return inventory;
+	}
+	public int getStock () {
+		return stock;
+	}
+	public int getOrd () {
+		return ord;
+	}
+	public boolean getNeedToProduce() {
+		return needToProduce;
+	}
+	public int getMaxInventory () {
+		return maxInventory;
+	}
+	public int getAveSellsDay () {
+		return aveSellsDay;
+	}
+	public String getSize () {
+		return size;
+	}
+	public String getSerialNumber () {
+		return serialNumber;
+	}
+	
+	
+	public void setSize (String sizeINTR) {
+		this.size = sizeINTR;
+	}
+	public void setSerialNumber (String serialNumberINTR) {
+		this.serialNumber = serialNumberINTR;	
+	}
+	public void setMaxInventory(int maxInventoryINTR) {
+		this.maxInventory = maxInventoryINTR;	
+	}
+	public void setInventory (int InventoryINTR) {
+		this.inventory = InventoryINTR;
+	}
+	public void setStock (int StockINTR) {
+		this.stock = StockINTR;
+	}
+	public void setNeedToProduce(boolean NeedToProduceINTR) {
+		this.needToProduce = NeedToProduceINTR;
+	}
+	public void setAveSellsDay(int AveSellsDayINTR) {
+		this.aveSellsDay = AveSellsDayINTR;
+	}
+	
+}
