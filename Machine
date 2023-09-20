@@ -1,0 +1,85 @@
+package code;
+
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class Machine {
+	private String name;
+	private boolean occupied;
+	private Product [] machineProducts;         //Products the machine can produce 
+	private int [] productDailyProduction;  // how much of each product 
+	private Order nowProduced;
+	private Queue<Order> waitingList = new LinkedList<>();
+	private int time4NextProduct;
+	private int timeTillEmpty;
+	
+	public Machine() {
+		this.name = " ";
+		this.occupied = false;
+		this.machineProducts = new Product [50];
+		this.productDailyProduction = new int [50];
+		this.waitingList = new LinkedList<>();
+		this.nowProduced = new Order();
+		this.time4NextProduct =0;
+		this.timeTillEmpty =0;
+	}
+	
+	public Machine(String name, boolean occupied, Product[] machineProductsINTR, int[] productDailyProductionINTR) {
+		this.name = name;
+		this.occupied = occupied;
+		this.machineProducts = machineProductsINTR;
+		this.productDailyProduction = productDailyProductionINTR;
+	}
+	
+	
+	public String getName () {
+		return name;
+	}
+	public boolean getoccupied() {
+		return occupied;
+	}
+	public Product [] getMachineProducts() {
+		return machineProducts;
+	}
+	public Product  getMachineProducts(int num) {
+		return machineProducts[num];
+	}
+	public Order getCurrentlyProduced() {
+		return nowProduced;
+	}
+	public int getProductDailyProduction(int num) {
+		return productDailyProduction[num];
+	}
+	public int getTime4NextProduct() {
+		return time4NextProduct;
+	}
+	
+	// get PProduction tells you the DialyProduction of an specific product for the machine.
+	public int getPProduction(Product searched) {
+		for(int i=0; i< this.getMachineProducts().length ;i++) {
+			if (this.getMachineProducts(i) == searched) {
+				return this.getProductDailyProduction(i);
+			}
+		}
+		return 0;
+	}
+	
+	
+	
+	public void setName (String nameINTR) {
+		this.name = nameINTR;
+	}
+	public void setOccupied (boolean occupiedINTR) {
+		this.occupied = occupiedINTR;
+	}
+	public void setCurrentProduced(Order nowProducedINTR) {
+		this.nowProduced = nowProducedINTR;
+	}
+	
+	public void addToWaitingList(Order order) {
+		this.waitingList.add(order);
+		this.time4NextProduct = order.getDuration();
+		this.timeTillEmpty = this.timeTillEmpty + order.getDuration();
+	}
+
+}
