@@ -1,0 +1,172 @@
+package code;
+
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+
+import org.apache.poi.EncryptedDocumentException;
+import org.apache.poi.ss.usermodel.WorkbookFactory;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
+
+public class SaveMe {
+ 
+    public static void main(String[] args) {
+    	Product [] MtyArray = new Product [100];
+    	Machine [] MachineArray = new Machine [100];
+    	String [] NextProduct = new String [100];
+    	int [] ProductDailyProduction =new int [100];
+       
+        File xlsxFile = new File("C:\\Users\\dan20\\eclipse-workspace\\ReadExcel\\src\\data\\SaveMe.xlsx");
+ 
+        try {
+//Creating input stream ;P *********
+            FileInputStream inputStream = new FileInputStream(xlsxFile);
+             
+//Creating workbook from input stream :D *********
+            XSSFWorkbook workbook = (XSSFWorkbook) WorkbookFactory.create(inputStream);
+            XSSFSheet sheet = workbook.getSheetAt(0);
+
+//READ PRODUCTS :) ********
+            for (int rowi = 2; rowi<7; rowi++) {
+			 	int i=rowi-2;
+                XSSFRow excelRow = sheet.getRow(rowi);
+                
+                int excelProductionLine = 	(int)Math.round((excelRow.getCell(0)).getNumericCellValue());
+                String excelSize = 			(excelRow.getCell(3)).getStringCellValue();
+                String excelSerialNumber =  (excelRow.getCell(4)).getStringCellValue();
+                String excelMaterial = 		(excelRow.getCell(5) ).getStringCellValue();
+                int excelInventory = 		(int)Math.round((excelRow.getCell(6)).getNumericCellValue());
+                int excelMaxInventory = 	(int)Math.round((excelRow.getCell(7)).getNumericCellValue());
+                int excelAveSellsMonth = 	(int)Math.round((excelRow.getCell(8)).getNumericCellValue());
+                
+                Product product = new Product (excelProductionLine, excelSize, excelSerialNumber, excelMaterial,excelInventory, excelMaxInventory, excelAveSellsMonth);
+                MtyArray[i] = product;  
+            }
+            
+// READ MACHINES C:**********
+           
+            
+          //  boolean over = false;
+            int machineNum=0;
+            int arrayCount = 0;
+         // set the reference machine to the first in the list
+        	int RM = (int)Math.round((sheet.getRow(2).getCell(0)).getNumericCellValue());
+        	int CM = (int)Math.round((sheet.getRow(2).getCell(0)).getNumericCellValue());
+        	
+            for(int i=2; i<7; i++) {
+            	
+            	XSSFRow row = sheet.getRow(i);
+            	
+            	//update each "for" the current machine
+            	CM = (int)Math.round((row.getCell(0)).getNumericCellValue());
+            
+            	 if (CM == RM) {
+            		 NextProduct[arrayCount] = (row.getCell(3)).getStringCellValue();
+			 		 ProductDailyProduction[arrayCount] = (int)Math.round((row.getCell(9)).getNumericCellValue());
+			 		 arrayCount++;
+			 		 
+            	 }else if(CM != RM && CM != 0){
+            		 
+            		 // update data in a new machine
+            		 Machine machine = new Machine(Integer.toString(CM), false, NextProduct, ProductDailyProduction);
+            		 
+            		 MachineArray[machineNum]= machine; // upload the machine on an array
+            		 machineNum++;
+            		 //empty both arrays & reset count
+            		 NextProduct = new String [100];
+            	     ProductDailyProduction =new int [100];
+            	     arrayCount=0;
+            	     // set new reference machine
+            		 RM=(int)Math.round((row.getCell(0)).getNumericCellValue());
+            		 //fill the new machine array
+            		 NextProduct[arrayCount] = (row.getCell(3)).getStringCellValue();
+			 		 ProductDailyProduction[arrayCount] = (int)Math.round((row.getCell(9)).getNumericCellValue());
+			 		 arrayCount++;
+            	 }  
+            
+            }
+            
+            //this repeat is for when the array ends :] :]
+            
+		         // update data in a new machine
+		   		 Machine machine = new Machine(Integer.toString(CM), false, NextProduct, ProductDailyProduction);
+		   		 
+		   		 MachineArray[machineNum]= machine;// upload the machine on an array
+		   		 machineNum++;
+		   		 //empty both arrays & reset count
+		   		 NextProduct = new String [100];
+		   	     ProductDailyProduction =new int [100];
+		   	     arrayCount=0;
+            
+            
+// ORGANIZE MTYarray BY PRODUCTION NEEDS *********
+		   	     
+     for (int i=0; i < 4; i++) {
+     	if (MtyArray[i].getDaysTillOver()<MtyArray[i+1].getDaysTillOver()) { 
+     		Product meanwhile =MtyArray[i];
+     		MtyArray[i] =MtyArray[i+1];
+     		MtyArray[i+1] = meanwhile;
+     	}
+     }
+            
+//ASSING THE PRODUCTS TO THE MACHINES (; **********
+	    	for (int i=0; i<MtyArray.length; i++) {
+	    		int b = 0;
+	    		for (int c=0; c<MachineArray[b].getNextProducts().length; c++) {
+	    			
+	    		if MachineArray[c].getNextProducts()
+	    		
+	    		
+	    		
+	    		if MachineArray[b].getoccupied()
+        	MachineArray[a].addToWaitingList(MtyArray[i]);
+        	
+	    	}
+	    }
+	     
+// WRITE :} **********
+  	     
+        XSSFRow row = sheet.getRow(0);
+        XSSFCell cell = row.createCell(0);
+        cell.setCellValue(1010);
+	        
+            //CLOSE INPUT STREAM 
+            inputStream.close();
+            //Crating output stream and writing the updated workbook
+            FileOutputStream os = new FileOutputStream(xlsxFile);
+            workbook.write(os);
+            //Close the workbook and output stream
+            workbook.close();
+            os.close();
+            System.out.println("Excel file has been updated successfully.");
+             
+        } catch (EncryptedDocumentException | IOException e) {
+            System.err.println("Exception while updating an existing excel file.");
+            e.printStackTrace();
+        }
+        
+        
+       
+        
+        
+        
+        
+        
+        for (int i=0; i < 5; i++) {
+        	 System.out.println(MtyArray[i].getSize());
+             System.out.println(MtyArray[i].getSerialNumber());
+        	
+        }
+			System.out.println(MachineArray[0].getName());
+    } 
+    
+    
+    
+    
+    
+    
+}
