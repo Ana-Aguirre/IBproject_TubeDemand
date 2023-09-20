@@ -1,0 +1,61 @@
+package code;
+
+public class Order {
+	private Product orderProduct;
+	private int expectedStock;
+	private Machine machine;
+	private int duration;
+	
+	public Order(){
+		this.orderProduct = new Product();            		
+		// empty array
+		this.expectedStock = 0;	   		
+		// zero
+		this.machine = new Machine();        		
+		// no text
+		this.duration = 0;        		
+		// no days
+	}
+	public Order(Product INTRproduct) {
+		this.orderProduct = INTRproduct;            		
+		// product
+		this.expectedStock = INTRproduct.getStock();	   		
+		// current stock
+		this.machine = new Machine();        		
+		// no text
+		this.duration = 0;        		
+		// no days
+	}
+	
+	public Product getOrderProducty () {
+		return orderProduct;
+	}
+	public int getExpectedStock () {
+		return expectedStock;
+	}
+	public Machine getMachine () {
+		return machine;
+	}
+	public int getDuration() {
+		return duration;
+	}
+	
+	
+	public void setOrderProduct (Product productINTR) {
+		this.orderProduct = productINTR;
+	}
+	public void setExpectedStock (int expectedStockINTR) {
+		this.expectedStock = expectedStockINTR;	
+	}
+	
+
+	public void setMachine(Machine machineINTR) {
+		this.machine = machineINTR;	
+		this.duration = (this.expectedStock)/(machineINTR.getPProduction(this.orderProduct));
+	}
+	
+	public void setDuration (int durationINTR) {
+		this.duration = durationINTR;
+	}
+	
+}
